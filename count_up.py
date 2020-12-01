@@ -31,11 +31,49 @@ if not os.path.exists(gff):
 
 if not os.path.exists(fasta):
     os.system("curl -O ftp://ftp.ensemblgenomes.org/pub/bacteria/release-45/fasta/bacteria_0_collection/escherichia_coli_str_k_12_substr_mg1655/dna/Escherichia_coli_str_k_12_substr_mg1655.ASM584v2.dna.chromosome.Chromosome.fa.gz")
-    
+number = 0
+Length = 0
+Flen = 0
+numberC =0
+LengthC =0
 with gzip.open(gff,"rt") as fh:
     # now add code to process this
     gff = csv.reader(fh,delimiter="\t")
     for row in gff:
         if row[0].startswith("#"):
             continue
-        print(row[3],row[6])
+        elif row[2]=="gene" :
+            number = number + 1
+            Length = int(row[4])-int(row[3]) + Length
+        elif row[2]=="CDS" :
+            numberC = numberC + 1
+            LengthC = int(row[4])-int(row[3]) + LengthC
+            
+           
+            #Length = int(row[4]) - int(row[3])
+            
+print("number of genes:", number,"simply counting gene colum")
+print("gene length:",Length,"sum Stop - Start of gene lines")
+with gzip.open(fasta,"rt") as fa:
+   pairs = aspairs(fa)
+   fasta  = dict(pairs)
+   for k,v in fasta.items():
+    print( "genemo length in fasta file",len(v),"( it only have 1 sequence )")
+    
+print("coding sequence length",LengthC)
+percentage = (int(LengthC) / int(len(v)))*100
+print("percentage of the genome which is coding",percentage,"%")
+ #for row in fasta:
+  #      if row[0].startswith('>'):
+   #         continue
+    #    else:
+            #Flen= Flen + len(str(row))
+            #print(len(str(row))-4)
+            
+
+#print("total genmo length:",Flen)
+
+         
+
+
+     
